@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 def fetch_data():
-    # 这里暂用模拟数据，后续可替换为真实接口
+    # 模拟数据，后续可替换真实接口
     return "2,650.00", "75.20"
 
 def generate_html(gold, oil):
