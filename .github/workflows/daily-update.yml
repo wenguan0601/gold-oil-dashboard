@@ -2,33 +2,34 @@ name: Daily Dashboard Update
 
 on:
   schedule:
-    # 每天北京时间 10:00 自动运行 (UTC 02:00)
-    - cron: '0 2 * * *'
+    - cron: '0 2 * * *' # 每天北京时间 10:00
   workflow_dispatch: # 允许手动触发
+
+permissions:
+  contents: write # 关键：赋予机器人写权限，允许它提交代码[3,4](@ref)
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v5 # 使用新版避免 Node 20 警告
-      
+      - name: Checkout repo
+        uses: actions/checkout@v4 # 使用最新版[3](@ref)
+        
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
           
       - name: Install dependencies
         run: pip install requests beautifulsoup4
         
       - name: Run script
-        run: python update_dashboard.py
+        run: python update_dashboard.py # 确保根目录有这个文件！
         
       - name: Commit and Push
         run: |
-          git config --global user.name "Auto Bot"
-          git config --global user.email "bot@example.com"
-          git add index.html data.json
-          git commit -m "Auto update dashboard data" || echo "No changes"
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add index.html
+          git commit -m "Auto update dashboard data" || echo "No changes to commit"
           git push
